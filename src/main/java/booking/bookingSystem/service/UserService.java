@@ -4,7 +4,9 @@
  */
 package booking.bookingSystem.service;
 
+import booking.bookingSystem.model.User;
 import booking.bookingSystem.repository.UserRepository;
+import java.util.Optional;
 import org.apache.catalina.startup.PasswdUserDatabase;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,5 +27,21 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
     
+    public void registerUser(User user){
+        //check if the email already exists
+        if(userRepository.findByEmail(user.getEmail()).isPresent()){
+            throw new RuntimeException("Email already registered. Please login.");
+        }
+        
+        //hash the raw password
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        
+        //now, I need to update the user password
+        user.setPassword(encodedPassword);
+        
+        //finally, save to the database all data
+        userRepository.save(user);
+        
+    }
     
 }
