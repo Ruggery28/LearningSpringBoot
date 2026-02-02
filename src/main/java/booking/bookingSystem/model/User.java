@@ -39,6 +39,7 @@ public class User {
     private String email;
     
     @NotBlank(message = "Password is required!")
+    @Size(max=60)
     private String password;
     
     @NotNull(message = "Date of birth required!")
