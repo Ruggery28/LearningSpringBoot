@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.security.core.Authentication;
 
 /**
  *
@@ -60,9 +61,17 @@ public class RegistrationController {
     }
 
     @GetMapping("/welcome")
-    public String welcomePage(Model model, Principal principal) {
-        // Principal gets the name of the currently logged-in user
-        model.addAttribute("username", principal.getName());
+    public String welcomePage(Model model, Authentication authentication) {
+        // Authentication object holds the info of the person who just logged in
+        if (authentication != null && authentication.isAuthenticated()) {
+
+            String email = authentication.getName(); //get the email of the user who logged
+            User user = userService.findUserByEmail(email); //find the full user object in the DB
+
+            if (user != null) {
+                model.addAttribute("username", user.getName());
+            }
+        }
         return "welcome";
     }
 

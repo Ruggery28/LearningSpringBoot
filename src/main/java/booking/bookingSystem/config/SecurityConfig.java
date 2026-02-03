@@ -28,6 +28,7 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                 .loginPage("/login") // Tell Spring we will provide our own login page
+                .defaultSuccessUrl("/welcome", true)// This sends them to welcome AFTER they login
                 .permitAll()
                 )
                 .logout(logout -> logout.permitAll());
