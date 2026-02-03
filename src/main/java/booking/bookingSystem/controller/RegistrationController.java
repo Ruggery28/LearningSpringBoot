@@ -34,6 +34,7 @@ public class RegistrationController {
         return "register"; //the HTML file needs to match this name
     }
 
+    //method to check erros while registering, and requesting the method register from userService
     @PostMapping("/register")
     public String registerUser(@Valid @ModelAttribute("user") User user, BindingResult result, Model model) {
         //if there is any error we need to send the page back with the error message to the user
@@ -50,7 +51,6 @@ public class RegistrationController {
             model.addAttribute("registrationError", e.getMessage());
             return "register";
         }
-
     }
 
 }
