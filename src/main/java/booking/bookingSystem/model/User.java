@@ -39,7 +39,7 @@ public class User {
     private String email;
     
     @NotBlank(message = "Password is required!")
-    @Size(max=60)
+    @Size(min=4, max=60, message = "Password must be between 4 to 60 characters.")
     private String password;
     
     @NotNull(message = "Date of birth required!")

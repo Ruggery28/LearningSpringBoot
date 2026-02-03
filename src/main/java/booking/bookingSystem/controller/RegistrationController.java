@@ -8,6 +8,7 @@ import booking.bookingSystem.model.User;
 import booking.bookingSystem.service.UserService;
 import org.springframework.ui.Model;
 import jakarta.validation.Valid;
+import java.security.Principal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,12 +46,24 @@ public class RegistrationController {
         //if the registration went trhough, we will ask for the method to register and send the data to it.
         try {
             userService.registerUser(user);
-            return "redirect:/login";
+            return "redirect:/welcome";
         } catch (RuntimeException e) {
             // If the email exists, we send the error message back to the form
             model.addAttribute("registrationError", e.getMessage());
             return "register";
         }
+    }
+
+    @GetMapping("/login")
+    public String Login() {
+        return "/login";
+    }
+
+    @GetMapping("/welcome")
+    public String welcomePage(Model model, Principal principal) {
+        // Principal gets the name of the currently logged-in user
+        model.addAttribute("username", principal.getName());
+        return "welcome";
     }
 
 }
