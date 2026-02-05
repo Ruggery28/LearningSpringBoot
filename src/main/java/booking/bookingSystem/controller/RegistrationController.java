@@ -47,10 +47,16 @@ public class RegistrationController {
         //if the registration went trhough, we will ask for the method to register and send the data to it.
         try {
             userService.registerUser(user);
-            return "redirect:/welcome";
+            return "redirect:/login?success";
         } catch (RuntimeException e) {
-            // If the email exists, we send the error message back to the form
-            model.addAttribute("registrationError", e.getMessage());
+            // If the error is happening in the age registration
+            if (e.getMessage().contains("18 years old")) {
+                // This attaches the error specifically to the birthDate field
+                result.rejectValue("birthDate", "error.user", e.getMessage());
+            } else {
+                //If the email exists, we send the error message back to the form
+                model.addAttribute("registrationError", e.getMessage());
+            }
             return "register";
         }
     }

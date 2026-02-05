@@ -6,6 +6,8 @@ package booking.bookingSystem.service;
 
 import booking.bookingSystem.model.User;
 import booking.bookingSystem.repository.UserRepository;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Optional;
 import org.apache.catalina.startup.PasswdUserDatabase;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,12 +32,29 @@ public class UserService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    public void checkAge(User user) {
+        LocalDate today = LocalDate.now(); //save the date from today into a variable LocalDate
+        //then, I calculate from the person's date to today's date and I will get a int
+        Period period = Period.between(user.getBirthDate(), today);
+        //I save it in a boolean to check if the real date is less then 18
+        boolean checkAge = (period.getYears() < 18);
+
+        //if the person is under 18, I stop the line and give it a error
+        if (checkAge) {
+            // This stops the process and sends a message back
+            throw new RuntimeException("User must be at least 18 years old to register.");
+        }
+    }
+
     public void registerUser(User user) {
         //check if the email already exists
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new RuntimeException("Email already registered. Please login.");
         }
 
+        //method we created to check the age
+        checkAge(user);
+        
         //hash the raw password
         String encodedPassword = passwordEncoder.encode(user.getPassword());
 
