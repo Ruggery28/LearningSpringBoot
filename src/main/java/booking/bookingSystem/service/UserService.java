@@ -47,6 +47,11 @@ public class UserService implements UserDetailsService {
     }
 
     public void registerUser(User user) {
+        //if password and confirmPassword is not equal, throw this exception
+        if(!user.getPassword().equals(user.getConfirmPassword())){
+            throw new RuntimeException("Passwords do not match!");
+        }
+        
         //check if the email already exists
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new RuntimeException("Email already registered. Please login.");
@@ -54,7 +59,7 @@ public class UserService implements UserDetailsService {
 
         //method we created to check the age
         checkAge(user);
-        
+           
         //hash the raw password
         String encodedPassword = passwordEncoder.encode(user.getPassword());
 

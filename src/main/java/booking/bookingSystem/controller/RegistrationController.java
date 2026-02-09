@@ -53,9 +53,12 @@ public class RegistrationController {
             if (e.getMessage().contains("18 years old")) {
                 // This attaches the error specifically to the birthDate field
                 result.rejectValue("birthDate", "error.user", e.getMessage());
+            } else if (e.getMessage().contains("Passwords do not match!"))  {
+                // This attaches the error specifically to the confirmPassword field
+                result.rejectValue("confirmPassword", "error.user", e.getMessage());
             } else {
                 //If the email exists, we send the error message back to the form
-                model.addAttribute("registrationError", e.getMessage());
+                model.addAttribute("registrationError", e.getMessage()); //use model because we need to search inside the data first
             }
             return "register";
         }

@@ -20,7 +20,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     <div th:if="${param.success}" class="alert alert-success">
                         Registration successful! Please log in.
                     </div>
-                    
+
                     <form th:action="@{/register}" th:object="${user}" method="post">
 
                         <div class="mb-3">
@@ -40,6 +40,12 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                             <label class="form-label">Password:</label>
                             <input type="password" th:field="*{password}" class="form-control">
                             <div class="text-danger small" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Confirm Password</label>
+                            <input type="password" th:field="*{confirmPassword}" class="form-control" id="confirmPassword">
+                            <span class="text-danger small" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></span>
                         </div>
 
                         <div class="mb-3">

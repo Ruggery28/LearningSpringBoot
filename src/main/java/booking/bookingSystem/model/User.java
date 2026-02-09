@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -41,6 +42,9 @@ public class User {
     @NotBlank(message = "Password is required!")
     @Size(min=4, max=60, message = "Password must be between 4 to 60 characters.")
     private String password;
+    
+    @Transient //this tells hibernate not to create a new column for the password into the database
+    private String confirmPassword;
     
     @NotNull(message = "Date of birth required!")
     @Past(message = "Date of birth must be in the past")
@@ -84,6 +88,14 @@ public class User {
         this.password = password;
     }
 
+    public String getConfirmPassword(){
+        return confirmPassword;
+    }
+    
+    public void setConfirmPassword(String confirmPassword){
+        this.confirmPassword = confirmPassword;
+    }
+    
     public LocalDate getBirthDate() {
         return birthDate;
     }
