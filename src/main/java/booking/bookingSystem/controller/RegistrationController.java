@@ -4,6 +4,9 @@
  */
 package booking.bookingSystem.controller;
 
+import booking.bookingSystem.exceptions.EmailAlreadyRegisteredException;
+import booking.bookingSystem.exceptions.PasswordNotMatchException;
+import booking.bookingSystem.exceptions.UnderAgeUserException;
 import booking.bookingSystem.model.User;
 import booking.bookingSystem.service.UserService;
 import org.springframework.ui.Model;
@@ -48,29 +51,40 @@ public class RegistrationController {
         try {
             userService.registerUser(user);
             return "redirect:/login?success";
-        } catch (RuntimeException e) {
+        } catch (EmailAlreadyRegisteredException e) {
             // If the error is happening in the age registration
-            if (e.getMessage().contains("18 years old")) {
-                // This attaches the error specifically to the birthDate field
-                result.rejectValue("birthDate", "error.user", e.getMessage());
-            } else if (e.getMessage().contains("Passwords do not match!"))  {
-                // This attaches the error specifically to the confirmPassword field
-                result.rejectValue("confirmPassword", "error.user", e.getMessage());
-            } else {
-                //If the email exists, we send the error message back to the form
-                model.addAttribute("registrationError", e.getMessage()); //use model because we need to search inside the data first
-            }
+            result.rejectValue("birthDate", "error.user", e.getMessage());
+            return "register";
+        } catch (PasswordNotMatchException e) {
+            //If the email exists, we send the error message back to the form
+            model.addAttribute("registrationError", e.getMessage()); //use model because we need to search inside the data first
+            return "register";
+        } catch (UnderAgeUserException e) {
+            result.rejectValue("birthDate", "error.user", e.getMessage());
             return "register";
         }
-    }
 
-    @GetMapping("/login")
-    public String Login() {
+        if (e.getMessage().contains("18 years old")) {
+            // This attaches the error specifically to the birthDate field
+            result.rejectValue("birthDate", "error.user", e.getMessage());
+        } else if (e.getMessage().contains("Passwords do not match!")) {
+            // This attaches the error specifically to the confirmPassword field
+            result.rejectValue("confirmPassword", "error.user", e.getMessage());
+        } else {
+            //If the email exists, we send the error message back to the form
+            model.addAttribute("registrationError", e.getMessage()); //use model because we need to search inside the data first
+        }
+        return "register";
+    }
+}
+
+@GetMapping("/login")
+public String Login() {
         return "/login";
     }
 
     @GetMapping("/welcome")
-    public String welcomePage(Model model, Authentication authentication) {
+public String welcomePage(Model model, Authentication authentication) {
         // Authentication object holds the info of the person who just logged in
         if (authentication != null && authentication.isAuthenticated()) {
 

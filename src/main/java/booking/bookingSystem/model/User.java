@@ -16,6 +16,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
@@ -24,28 +25,32 @@ import java.time.LocalDate;
  * @author Ruggery
  */
 @Entity //Spring will make it as table
-@Table(name="users")
+@Table(name = "users")
 public class User {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id; //Integer instead of Int, because we'll need it to accept null as a value.
-    
+
     @NotBlank(message = "Name is required!")
-    @Size(min=2, max=50, message = "Name must be between 2 and 50 characters.")
+    @Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters.")
     private String name;
-    
+
     @Email(message = "Please, provide a valid email.")
     @NotBlank(message = "Email is required!")
     private String email;
-    
+
     @NotBlank(message = "Password is required!")
-    @Size(min=4, max=60, message = "Password must be between 4 to 60 characters.")
+    @Pattern(
+            regexp = "^(?=.*[!@#$%¨&*])[A-Za-z0-9!@#$%¨&*]*$",
+            message = "Password must contain at least one symbol (!@#$%¨&*)"
+    )
+    @Size(min = 8, max = 60, message = "Password must be between 8 to 60 characters.")
     private String password;
-    
+
     @Transient //this tells hibernate not to create a new column for the password into the database
     private String confirmPassword;
-    
+
     @NotNull(message = "Date of birth required!")
     @Past(message = "Date of birth must be in the past")
     private LocalDate birthDate; //best way to safe birthDate in Spring
@@ -53,9 +58,8 @@ public class User {
     //Empty constructor
     public User() {
     }
-    
-    //Getters and Setters
 
+    //Getters and Setters
     public Integer getId() {
         return id;
     }
@@ -88,14 +92,14 @@ public class User {
         this.password = password;
     }
 
-    public String getConfirmPassword(){
+    public String getConfirmPassword() {
         return confirmPassword;
     }
-    
-    public void setConfirmPassword(String confirmPassword){
+
+    public void setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
     }
-    
+
     public LocalDate getBirthDate() {
         return birthDate;
     }
@@ -103,6 +107,5 @@ public class User {
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
-    
-    
+
 }

@@ -4,6 +4,9 @@
  */
 package booking.bookingSystem.service;
 
+import booking.bookingSystem.exceptions.EmailAlreadyRegisteredException;
+import booking.bookingSystem.exceptions.PasswordNotMatchException;
+import booking.bookingSystem.exceptions.UnderAgeUserException;
 import booking.bookingSystem.model.User;
 import booking.bookingSystem.repository.UserRepository;
 import java.time.LocalDate;
@@ -42,19 +45,19 @@ public class UserService implements UserDetailsService {
         //if the person is under 18, I stop the line and give it a error
         if (checkAge) {
             // This stops the process and sends a message back
-            throw new RuntimeException("User must be at least 18 years old to register.");
+            throw new UnderAgeUserException("User must be at least 18 years old to register.");
         }
     }
 
     public void registerUser(User user) {
         //if password and confirmPassword is not equal, throw this exception
         if(!user.getPassword().equals(user.getConfirmPassword())){
-            throw new RuntimeException("Passwords do not match!");
+            throw new PasswordNotMatchException("Passwords do not match!");
         }
         
         //check if the email already exists
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new RuntimeException("Email already registered. Please login.");
+            throw new EmailAlreadyRegisteredException("Email already registered. Please login.");
         }
 
         //method we created to check the age

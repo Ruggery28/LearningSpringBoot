@@ -38,8 +38,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
                         <div class="mb-3">
                             <label class="form-label">Password:</label>
-                            <input type="password" th:field="*{password}" class="form-control">
+                            <input type="password" th:field="*{password}" class="form-control" id="passwordInput">
                             <div class="text-danger small" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                            <div id="passwordLiveFeedback" class="small mt-1" style="display: none;"></div>
                         </div>
 
                         <div class="mb-3">
@@ -65,4 +66,34 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             </div>
         </div>
     </body>
+    <script>
+        // 1. Grab the elements from the page
+        const passwordInput = document.getElementById('passwordInput');
+        const feedback = document.getElementById('passwordLiveFeedback');
+
+        // 2. Listen for every keystroke ('input' event)
+        passwordInput.addEventListener('input', function () {
+            const password = passwordInput.value;
+
+            // 3. Define our logic
+            const hasMinLength = password.length >= 8;
+            // Regex test: returns true if it finds a symbol
+            const hasSymbol = /[!@#$%¨&*]/.test(password);
+
+            // 4. Update the UI
+            if (password.length === 0) {
+                feedback.style.display = 'none'; // Hide if empty
+            } else {
+                feedback.style.display = 'block'; // Show if user is typing
+
+                if (hasMinLength && hasSymbol) {
+                    feedback.textContent = "Password looks strong!";
+                    feedback.className = "small mt-1 text-success";
+                } else {
+                    feedback.textContent = "Needs 8+ characters and a symbol (!@#$%¨&*)";
+                    feedback.className = "small mt-1 text-danger";
+                }
+            }
+        });
+    </script>
 </html>
