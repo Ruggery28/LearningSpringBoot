@@ -31,9 +31,10 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
                         <div class="mb-3">
                             <label class="form-label">Email:</label>
-                            <input type="email" th:field="*{email}" class="form-control" placeholder="email@example.com">
+                            <input type="email" th:field="*{email}" class="form-control" id="email" placeholder="email@example.com">
                             <div class="text-danger small" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
                             <div th:if="${registrationError}" class="text-danger small" th:text="${registrationError}"></div>
+                            <div id="emailFeedback" class="small mt-1" style="display: none;"></div>
                         </div>
 
                         <div class="mb-3">
@@ -68,6 +69,41 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         </div>
     </body>
     <script>
+
+        // 1. Grab the email input and the feedback area
+        const emailInput = document.getElementById('email'); 
+        const emailFeedback = document.getElementById('emailFeedback'); 
+
+        // 2. Listen for typing
+        emailInput.addEventListener('input', function () {
+            const email = emailInput.value;
+
+            // specific check: don't check empty or very short emails
+            if (email.length < 5) {
+                emailFeedback.style.display = 'none';
+                return;
+            }
+
+            // 3. The Fetch (The "Silent Waiter")
+            fetch('/check-email?email=' + email)
+                    .then(response => response.json()) // Read the true/false response
+                    .then(exists => {
+                        if (exists) {
+                            // TRUE: Email is taken
+                            emailFeedback.style.display = 'block';
+                            emailFeedback.textContent = "This email is already registered!";
+                            emailFeedback.className = "small mt-1 text-danger";
+                        } else {
+                            // FALSE: Email is free
+                            emailFeedback.style.display = 'block';
+                            emailFeedback.textContent = "Email is available!";
+                            emailFeedback.className = "small mt-1 text-success";
+                        }
+                    }).catch(error => {
+                        console.error("Error checking email: ", error);
+                    });
+        });
+
         // 1. Grab the elements from the page
         const passwordInput = document.getElementById('passwordInput');
         const feedback = document.getElementById('passwordLiveFeedback');

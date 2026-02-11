@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  *
@@ -80,6 +82,13 @@ public class RegistrationController {
 //            //If the email exists, we send the error message back to the form
 //            model.addAttribute("registrationError", e.getMessage()); //use model because we need to search inside the data first
 //        }
+    }
+
+    @GetMapping("/check-email")
+    @ResponseBody //this will send a respose true or false and not look for a html name
+    public boolean checkEmail(@RequestParam("email") String email) {
+        // This calls the method you just fixed!
+        return userService.emailExists(email);
     }
 
     @GetMapping("/login")

@@ -81,6 +81,12 @@ public class UserService implements UserDetailsService {
 
     }
 
+    //method to return if email exist or not, true or false.
+    public boolean emailExists(String email){
+        //findByEmail will return the whole User, so we just want to check if inside the User there is a email
+       return userRepository.findByEmail(email).isPresent();
+    }
+    
     // Method to find the user by email and return the object with full information
     public User findUserByEmail(String email) {
         // We reuse the repository method we already have

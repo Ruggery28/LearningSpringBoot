@@ -24,6 +24,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/register", "/css/**", "/js/**").permitAll() // Allow everyone here
+                .requestMatchers("/check-email").permitAll() //this will allow check-email to be read when we type in the email input
                 .anyRequest().authenticated() // Lock everything else
                 )
                 .formLogin(form -> form
