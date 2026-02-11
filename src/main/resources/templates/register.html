@@ -58,7 +58,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                         </div>
 
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                            <button type="submit" id="submitButton" class="btn btn-primary" disabled>
+                                Save Changes</button>
                         </div>
                     </form>
                     <div class="mt-3 text-center">
@@ -69,10 +70,36 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         </div>
     </body>
     <script>
+        //const to store the value inside the button id
+        const submitBtn = document.getElementById('submitButton');
+
+        // We need this because the fetch happens separately from the other checks
+        let isEmailValid = false;
+        function validateForm() {
+            const password = passwordInput.value;
+            const confirm = confirmInput.value;
+
+            // Check 1: Password Strength
+            const hasMinLength = password.length >= 8;
+            const hasSymbol = /[!@#$%¨&*]/.test(password);
+            const isPasswordStrong = hasMinLength && hasSymbol;
+
+            // Check 2: Match
+            const isMatch = (password === confirm) && (confirm.length > 0);
+
+            // Check 3: Email (using our state variable)
+
+            // FINAL DECISION
+            if (isEmailValid && isPasswordStrong && isMatch) {
+                submitBtn.disabled = false;
+            } else {
+                submitBtn.disabled = true;
+            }
+        }
 
         // 1. Grab the email input and the feedback area
-        const emailInput = document.getElementById('email'); 
-        const emailFeedback = document.getElementById('emailFeedback'); 
+        const emailInput = document.getElementById('email');
+        const emailFeedback = document.getElementById('emailFeedback');
 
         // 2. Listen for typing
         emailInput.addEventListener('input', function () {
@@ -93,15 +120,18 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                             emailFeedback.style.display = 'block';
                             emailFeedback.textContent = "This email is already registered!";
                             emailFeedback.className = "small mt-1 text-danger";
+                            isEmailValid = false;
                         } else {
                             // FALSE: Email is free
                             emailFeedback.style.display = 'block';
                             emailFeedback.textContent = "Email is available!";
                             emailFeedback.className = "small mt-1 text-success";
+                            isEmailValid = true;
                         }
+                        validateForm();
                     }).catch(error => {
-                        console.error("Error checking email: ", error);
-                    });
+                console.error("Error checking email: ", error);
+            });
         });
 
         // 1. Grab the elements from the page
@@ -132,6 +162,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 }
             }
             checkMatch();
+            validateForm();
         });
 
         const confirmInput = document.getElementById('confirmPassword');
@@ -159,6 +190,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         }
 
         // Listen for typing in the confirm box
-        confirmInput.addEventListener('input', checkMatch);
+        confirmInput.addEventListener('input', function() {
+            checkMatch();
+            validateForm();
+        });
     </script>
 </html>
