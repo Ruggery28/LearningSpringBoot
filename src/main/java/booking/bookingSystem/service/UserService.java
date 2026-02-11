@@ -7,6 +7,7 @@ package booking.bookingSystem.service;
 import booking.bookingSystem.exceptions.EmailAlreadyRegisteredException;
 import booking.bookingSystem.exceptions.PasswordNotMatchException;
 import booking.bookingSystem.exceptions.UnderAgeUserException;
+import booking.bookingSystem.exceptions.WeekPasswordException;
 import booking.bookingSystem.model.User;
 import booking.bookingSystem.repository.UserRepository;
 import java.time.LocalDate;
@@ -55,6 +56,12 @@ public class UserService implements UserDetailsService {
             throw new PasswordNotMatchException("Passwords do not match!");
         }
         
+        //this will check if the password contains at least one special character
+        String password = user.getPassword();
+        if (!password.matches(".*[!@#$%^&*].*")){
+            throw new WeekPasswordException("Password require at least one special character.");
+        }
+   
         //check if the email already exists
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new EmailAlreadyRegisteredException("Email already registered. Please login.");

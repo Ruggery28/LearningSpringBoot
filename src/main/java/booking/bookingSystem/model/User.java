@@ -41,11 +41,11 @@ public class User {
     private String email;
 
     @NotBlank(message = "Password is required!")
-    @Pattern(
-            regexp = "^(?=.*[!@#$%¨&*])[A-Za-z0-9!@#$%¨&*]*$",
-            message = "Password must contain at least one symbol (!@#$%¨&*)"
-    )
-    @Size(min = 8, max = 60, message = "Password must be between 8 to 60 characters.")
+//    @Pattern(
+//            regexp = "^(?=.*[!@#$%¨&*])[A-Za-z0-9!@#$%¨&*]*$",
+//            message = "Password must contain at least one symbol (!@#$%¨&*)"
+//    )
+    @Size(min = 8, max = 60, message = "Password must be between 8 to 60 characters and 1 special character.")
     private String password;
 
     @Transient //this tells hibernate not to create a new column for the password into the database

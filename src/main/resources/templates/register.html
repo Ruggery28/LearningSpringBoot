@@ -47,6 +47,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                             <label for="confirmPassword" class="form-label">Confirm Password</label>
                             <input type="password" th:field="*{confirmPassword}" class="form-control" id="confirmPassword">
                             <span class="text-danger small" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></span>
+                            <div id="matchFeedback" class="small mt-1" style="display: none;"></div>
                         </div>
 
                         <div class="mb-3">
@@ -94,6 +95,34 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     feedback.className = "small mt-1 text-danger";
                 }
             }
+            checkMatch();
         });
+
+        const confirmInput = document.getElementById('confirmPassword');
+        const matchFeedback = document.getElementById('matchFeedback');
+
+        function checkMatch() {
+            const password = passwordInput.value;
+            const confirm = confirmInput.value;
+
+            // Only show feedback if the user has started typing in the confirm box
+            if (confirm.length === 0) {
+                matchFeedback.style.display = 'none';
+                return;
+            }
+
+            matchFeedback.style.display = 'block';
+
+            if (password === confirm) {
+                matchFeedback.textContent = "Passwords match!";
+                matchFeedback.className = "small mt-1 text-success";
+            } else {
+                matchFeedback.textContent = "Passwords do not match yet.";
+                matchFeedback.className = "small mt-1 text-danger";
+            }
+        }
+
+        // Listen for typing in the confirm box
+        confirmInput.addEventListener('input', checkMatch);
     </script>
 </html>
