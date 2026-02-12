@@ -29,11 +29,13 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository; //this communicate with our UserRepository
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     // This constructor tells Spring to "inject" these two tools automatically
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
     }
 
     public void checkAge(User user) {
@@ -79,6 +81,8 @@ public class UserService implements UserDetailsService {
         //finally, save to the database all data
         userRepository.save(user);
 
+        //send the email after saving the user into the database
+        emailService.sendWelcomeEmail(user.getName(), user.getEmail());
     }
 
     //method to return if email exist or not, true or false.
