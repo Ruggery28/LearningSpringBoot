@@ -6,6 +6,7 @@ package booking.bookingSystem.service;
 import org.springframework.mail.SimpleMailMessage;
 
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 /**
@@ -23,6 +24,7 @@ public class EmailService {
     }
     
     //method to send the email to the user
+    @Async // Tells Spring to run this in the background
     public void sendWelcomeEmail(String name, String email){
         //import the class and create a instance for SimpleMailMessage
         SimpleMailMessage message = new SimpleMailMessage();
